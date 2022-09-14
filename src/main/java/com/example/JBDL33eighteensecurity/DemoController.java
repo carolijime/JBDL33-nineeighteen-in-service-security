@@ -1,6 +1,10 @@
 package com.example.JBDL33eighteensecurity;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,8 +26,10 @@ public class DemoController {
     }
 
     @GetMapping("/developcode")
-    public String developeCode(){
-        return "Developing the code...";
+    public String developCode(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        MyUser myUser = (MyUser) authentication.getPrincipal();
+        return myUser.getName() + " is Developing the code...";
     }
 
     @GetMapping("/accessserver")
@@ -31,7 +37,7 @@ public class DemoController {
         return "Accessing the server...";
     }
 
-    @GetMapping("/home")
+    @PostMapping("/home")
     public String home(){
         return "Welcome to the home page...";
     }
@@ -40,6 +46,19 @@ public class DemoController {
     public String homeAll(){
         return "Welcome to the home page all...";
     }
+
+    // sign up API to create user
+    // POST method is consired a non-safe method. Non-safe methods can not be permitted all with csrf enabled (by default is enabled)
+    // We have disabled csrf in DemoConfig so we can use POST method (line .csrf().disable())
+    @PostMapping("/signup")
+    public void signup(@RequestParam("name") String name,
+                       @RequestParam("email") String email,
+                       @RequestParam("password") String password, //encrypted pwd : algorithm
+                       @RequestParam("authority") String authority){
+
+    }
+
+
 
 }
 
